@@ -4,6 +4,7 @@
 
 struct node{
     int ele;
+    struct node *prev;
     struct node *next;
 };
 
@@ -18,6 +19,7 @@ struct node *createList(int val)
     }
 
     newNode->ele = val;
+    newNode->prev = NULL;
     newNode->next = NULL;
 
     return newNode;
@@ -67,59 +69,25 @@ struct node *findPosition(struct node *head, int val)
     return NULL;
 }
 
-struct node *findPrevious(struct node *head, int val)
-{
-    struct node *preNode;
-    struct node *tempNode;
-
-    if(head->ele == val)
-    {
-        printf("This element do not have previous node\r\n");
-        return NULL;
-    }
-
-    preNode = head;
-    while(preNode->next)
-    {
-        tempNode = preNode->next; 
-        if(tempNode->ele == val)
-            return preNode;
-        preNode = preNode->next;
-    }
-
-    return NULL;
-}
-#if 0
-void deleteNode(struct node *head, int val)
-{
-    struct node *preNode;
-    struct node *curNode;
-    
-    preNode = findPrevious(head, val);
-    curNode = findPosition(head, val);
-
-    preNode->next = curNode->next;
-
-    free(curNode);
-}
-#endif
 void deleteNode(struct node **head, int val)
 {
     struct node *preNode;
     struct node *curNode;
 
-    preNode = findPrevious(*head, val);
     curNode = findPosition(*head, val);
+    preNode = curNode->prev;
 
     if(preNode && curNode)
     {
         preNode->next = curNode->next;
+        curNode->next->prev = preNode;
         free(curNode);
         return ;
     }
     else if(curNode)
     {
         *head = curNode->next;
+        curNode->next->prev = *head;
         free(curNode);
         return ;
     }
@@ -138,14 +106,16 @@ struct node *insertNode(struct node *head, int val, int pos)
     struct node *cur;
     struct node *pre;
     cur = findPosition(head, pos);
-    pre = findPrevious(head, pos);
+    pre = cur->prev;
     if(pre && cur)
     {
         struct node *insertNode;
         insertNode = (struct node *)malloc(sizeof(struct node));
         insertNode->ele = val;
         pre->next = insertNode;
+        insertNode->prev = pre;
         insertNode->next = cur;
+        cur->prev = insertNode;
         return head;
     }
     if(!cur)
@@ -158,6 +128,8 @@ struct node *insertNode(struct node *head, int val, int pos)
     insertNode = (struct node *)malloc(sizeof(struct node));
     insertNode->ele = val;
     insertNode->next = cur;
+    cur->prev = insertNode;
+    insertNode->prev = NULL;
 
     return insertNode;
 }
@@ -215,11 +187,8 @@ int main()
     printList(list);
     deleteNode(&list, 33);
     printList(list);
-    deleteNode(&list, 10);
-    printList(list);
     deleteNode(&list, 23);
     printList(list);
-    printf("Node delete complete\r\n");
 
     list = (struct node *)deleteList(list);
     if(isEmpty(list))
