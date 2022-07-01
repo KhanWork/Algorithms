@@ -100,9 +100,10 @@ void *deleteList(struct node **funNode)
     curNode = *funNode;
     while(*funNode)
     {
+        curNode = (*funNode)->next;
         deleteNode(funNode, (*funNode)->ele);
         if(*funNode != NULL)
-            *funNode = curNode->next;
+            *funNode = curNode;
         else
             return NULL;
     }
@@ -146,8 +147,8 @@ int main()
     printList(list);
     deleteNode(&list, 15);
     printList(list);
-    deleteNode(&list, 10);
-    printList(list);
+    //deleteNode(&list, 10);
+    //printList(list);
     //deleteNode(&list, 35);
     //printList(list);
     //deleteNode(&list, 20);
