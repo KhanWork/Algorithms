@@ -72,15 +72,18 @@ void deleteNode(struct node **fnode, int val)
     preNode = findPrevious(*fnode, val);
     curNode = findPosition(*fnode, val);
 
+    /* Do not compete pointer, like preNode < curNode */
     if(preNode && curNode && (preNode != curNode))
     {
+        printf("go into this logic\r\n");
         preNode->next = curNode->next;
+        *fnode = preNode;
         free(curNode);
         return ;
     }
     else if(curNode)
     {
-        *fnode = curNode->next;
+        *fnode = NULL;
         free(curNode);
         return ;
     }
@@ -121,13 +124,11 @@ void *deleteList(struct node **fnode)
     int i = 0;
     while(*fnode)
     {
-        curNode = (*fnode)->next;
         deleteNode(fnode, (*fnode)->ele);
-        *fnode = curNode;
-        if(i)
+        if(*fnode != NULL)
+            *fnode = curNode->next;
+        else
             return NULL;
-        if((*fnode)->next == *fnode && i == 0)
-            i++;
     }
     return NULL;
 }
@@ -169,9 +170,19 @@ int main()
     printList(list);
     deleteNode(&list, 15);
     printList(list);
+    /* There is a problem when delete first node (head) */
+    deleteNode(&list, 10);
+    printList(list);
+    deleteNode(&list, 35);
+    printList(list);
+    deleteNode(&list, 23);
+    printList(list);
+    //deleteNode(&list, 20);
+    //printList(list);
     printf("delete Node complete\r\n");
 
     list = (struct node *)deleteList(&list);
+    printf("delete list complete\r\n");
     if(isEmpty(list))
         printf("list is empty\r\n");
     else
