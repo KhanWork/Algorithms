@@ -75,7 +75,6 @@ void deleteNode(struct node **fnode, int val)
     /* Do not compete pointer, like preNode < curNode */
     if(preNode && curNode && (preNode != curNode))
     {
-        printf("go into this logic\r\n");
         preNode->next = curNode->next;
         *fnode = preNode;
         free(curNode);
@@ -120,13 +119,13 @@ void insertNode(struct node *fnode, int orz, int val)
 void *deleteList(struct node **fnode)
 {
     struct node *curNode;
-    curNode = *fnode;
     int i = 0;
     while(*fnode)
     {
+        curNode = (*fnode)->next;
         deleteNode(fnode, (*fnode)->ele);
         if(*fnode != NULL)
-            *fnode = curNode->next;
+            *fnode = curNode;
         else
             return NULL;
     }
@@ -171,13 +170,13 @@ int main()
     deleteNode(&list, 15);
     printList(list);
     /* There is a problem when delete first node (head) */
-    deleteNode(&list, 10);
-    printList(list);
-    deleteNode(&list, 35);
-    printList(list);
-    deleteNode(&list, 23);
-    printList(list);
+    //deleteNode(&list, 10);
+    //printList(list);
+    //deleteNode(&list, 35);
+    //printList(list);
     //deleteNode(&list, 20);
+    //printList(list);
+    //deleteNode(&list, 23);
     //printList(list);
     printf("delete Node complete\r\n");
 

@@ -56,13 +56,13 @@ void deleteNode(struct node **funNode, int val)
     {
         preNode->next = curNode->next;
         curNode->next->prev = preNode;
+        *funNode = preNode;
         free(curNode);
         return ;
     }
     else if(curNode)
     {
-        *funNode = curNode->next;
-        curNode->next->prev = *funNode;
+        *funNode = NULL;
         free(curNode);
 
         return ;
@@ -98,16 +98,13 @@ void *deleteList(struct node **funNode)
 {
     struct node *curNode;
     curNode = *funNode;
-    int i = 0;
     while(*funNode)
     {
-        curNode = (*funNode)->next;
         deleteNode(funNode, (*funNode)->ele);
-        *funNode = curNode;
-        if(i)
+        if(*funNode != NULL)
+            *funNode = curNode->next;
+        else
             return NULL;
-        if((*funNode)->next == *funNode && i == 0)
-            i++;
     }
     return NULL;
 }
@@ -149,11 +146,16 @@ int main()
     printList(list);
     deleteNode(&list, 15);
     printList(list);
-    //deleteNode(&list, 10);
+    deleteNode(&list, 10);
     printList(list);
+    //deleteNode(&list, 35);
+    //printList(list);
+    //deleteNode(&list, 20);
+    //printList(list);
     printf("delete Node complete\r\n");
 
     list = (struct node *)deleteList(&list);
+    printf("deleteList complete\r\n");
     if(isEmpty(list))
         printf("list is empty\r\n");
     else
